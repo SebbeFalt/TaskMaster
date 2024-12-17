@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TaskMaster.Models"
+             xmlns:viewModels="clr-namespace:TaskMaster.ViewModels"
+             xmlns:helpers="clr-namespace:TaskMaster.Helpers"
+             x:Class="TaskMaster.Views.Create"
+             BackgroundColor="{StaticResource BodyBGColor}"
+             x:DataType="viewModels:CreateViewModel">
+
+
+  <VerticalStackLayout VerticalOptions="FillAndExpand">
+    <Label  
+      Text="{Binding Title}" 
+      HorizontalOptions="FillAndExpand"
+      VerticalOptions="Center"
+      BackgroundColor="{StaticResource TitleBGColor}"
+      FontAttributes="Bold"
+      FontSize="34"
+      HeightRequest="50">
+    </Label>
+
+    <Border 
+      BackgroundColor="{Binding BackgroundColor}"
+      Padding="30" 
+      Margin="30"
+      WidthRequest="250">
+      <VerticalStackLayout Spacing="10" VerticalOptions="FillAndExpand">
+        
+        <Entry Text="{Binding NewToDo.Title}"
+               Placeholder="Enter header..." 
+               PlaceholderColor="{StaticResource GlobalTextColor}"
+               FontSize="18" 
+               TextColor="{StaticResource GlobalTextColor}" 
+               BackgroundColor="Transparent"/>
+
+        <Editor 
+                Text="{Binding NewToDo.Body}" 
+                Placeholder="Enter details..."
+                PlaceholderColor="{StaticResource GlobalTextColor}"
+                AutoSize="TextChanges" 
+                FontSize="16" 
+                TextColor="{StaticResource GlobalTextColor}" 
+                BackgroundColor="Transparent" 
+                HeightRequest="250"
+                />
+
+        <Picker
+                ItemsSource="{x:Static helpers:SD.STATES}" 
+                SelectedItem="{Binding State}" 
+                FontSize="16" 
+                TextColor="{StaticResource GlobalTextColor}"
+                HorizontalTextAlignment="Center"
+                />
+        <Picker
+                ItemsSource="{x:Static helpers:SD.TYPES}" 
+                SelectedItem="{Binding NewToDo.Type}" 
+                FontSize="16" 
+                TextColor="{StaticResource GlobalTextColor}"
+                HorizontalTextAlignment="Center"
+                />
+        <DatePicker 
+                    Date="{Binding NewToDo.DeadLine}" 
+                    Format="yyyy-MM-dd"
+                    HorizontalOptions="Center"
+                    TextColor="{StaticResource GlobalTextColor}"
+                    />
+        
+      </VerticalStackLayout>
+    </Border>
+
+    <HorizontalStackLayout HorizontalOptions="Center" Spacing="40">
+    <Button Text="Save" 
+            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CreateViewModel}}, Path=SaveCommand}"
+            CommandParameter="{Binding .}"
+            BackgroundColor="{StaticResource ButtonBGColor}" 
+            TextColor="{StaticResource GlobalTextColor}"  
+            WidthRequest="100"
+            VerticalOptions="EndAndExpand"
+            Margin="0,20,0,0"/>
+
+      <Button Text="↩️" 
+              Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CreateViewModel}}, Path=GoBackCommand}"
+              BackgroundColor="{StaticResource ButtonBGColor}" 
+              TextColor="{StaticResource GlobalTextColor}" 
+              WidthRequest="100"
+              VerticalOptions="EndAndExpand"
+              Margin="0,20,0,0"/> 
+    </HorizontalStackLayout>
+  </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:TaskMaster.Helpers"
+             xmlns:models="clr-namespace:TaskMaster.Models"
+             xmlns:views="clr-namespace:TaskMaster.Views"
+             xmlns:viewModels="clr-namespace:TaskMaster.ViewModels"
+             x:Class="TaskMaster.Views.MainPage"
+             x:DataType="viewModels:MainPageViewModel"
+             BackgroundColor="{StaticResource BodyBGColor}">
+
+  <Grid RowDefinitions="Auto, Auto, *, Auto" ColumnDefinitions="*,Auto">
+
+    <Label  
+      Text="{Binding Title}" 
+      HorizontalOptions="FillAndExpand"
+      VerticalOptions="Center"
+      BackgroundColor="{StaticResource TitleBGColor}"
+      FontAttributes="Bold"
+      FontSize="34"
+      HeightRequest="50"
+      Grid.Row="0"
+      Grid.ColumnSpan="2">
+    </Label>
+    
+      <Label
+        Grid.Row="1"
+        Grid.ColumnSpan="2"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="Center"
+        FontSize="20"
+        Text="{Binding SelectedState}"
+        >
+      </Label>
+   
+    <ImageButton
+      Source="addimg.png"
+      Grid.Row="1"
+      Grid.Column="1"
+      Command="{Binding GoToCreateCommand}"
+      CommandParameter="{Binding SelectedState}"
+      HorizontalOptions="End"
+      VerticalOptions="Center"
+      CornerRadius="8"
+      HeightRequest="50"
+      WidthRequest="50"
+      Margin="10"
+      Padding="10"
+      BackgroundColor="{StaticResource GlobalTextColor}">
+    </ImageButton>
+
+
+    <ImageButton
+     Source="emptyimg.png"
+     IsVisible="{Binding ShowEmptyImage}"
+     Command="{Binding GoToCreateCommand}"
+     CommandParameter="{Binding SelectedState}"
+     Grid.Row="1"
+     Grid.RowSpan="2" 
+     Grid.ColumnSpan="2"
+     Margin="20,0,20,0"
+     Aspect="Fill"
+     HeightRequest="325"
+     WidthRequest="325"
+     ZIndex="1"
+     CornerRadius="20"/>
+
+    <CollectionView 
+      HeightRequest="500"
+      ItemsSource="{Binding ToDos}" 
+      Grid.Row="2" 
+      Grid.ColumnSpan="2"
+      SelectionMode="None">
+
+      <CollectionView.ItemsLayout>
+        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+      </CollectionView.ItemsLayout>
+
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:ToDo">
+          <SwipeView>
+            <Border  Padding="30" BackgroundColor="{Binding Color}" HeightRequest="200">
+              <Border.GestureRecognizers>
+                <SwipeGestureRecognizer 
+                Direction="Left"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=RemoveCommand}"
+                CommandParameter="{Binding .}"/>
+                <SwipeGestureRecognizer 
+                Direction="Right"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=RemoveCommand}"
+                CommandParameter="{Binding .}"/>
+                <TapGestureRecognizer 
+                CommandParameter="{Binding .}"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=GoToDetailsCommand}">
+                </TapGestureRecognizer>
+              </Border.GestureRecognizers>
+              <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Start">
+                <Label Text="{Binding Title}" FontSize="Title" TextColor="{StaticResource GlobalTextColor}" 
+                       FontAttributes="Bold" TextTransform="Uppercase" TextDecorations="Underline"/>
+                <Label Text="{Binding Body}" FontSize="Body" TextColor="{StaticResource GlobalTextColor}" 
+                       Margin="0,20,0,0"/>
+
+                <Label FontSize="11" TextColor="{StaticResource GlobalTextColor}" Margin="0,20,0,0">
+                  <Label.Text>
+                    <MultiBinding StringFormat="{}{1}: {0}">
+                      <Binding Path="Type"/>
+                      <Binding Path="DeadLineFormatted"/>
+                    </MultiBinding>
+                  </Label.Text>
+                </Label>
+
+
+              </VerticalStackLayout>
+            </Border>
+          </SwipeView>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+    </CollectionView>
+
+    <Grid Grid.Row="3" Grid.ColumnSpan="2" BackgroundColor="{StaticResource TitleBGColor}" Padding="5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+
+      <Button Text="📝" 
+              FontSize="20"
+              Command="{Binding SortByStateCommand}"
+              CommandParameter="{x:Static helpers:SD.TODO}"
+              BackgroundColor="Transparent"
+              BorderColor="{StaticResource BodyBGColor}"
+              BorderWidth="2"
+              TextColor="{StaticResource GlobalTextColor}" 
+              FontAttributes="Bold" 
+              Grid.Column="0">
+
+
+        <Button.Triggers>
+          <DataTrigger TargetType="Button" Binding="{Binding SelectedState}" Value="{x:Static helpers:SD.TODO}">
+            <Setter Property="BackgroundColor" Value="{StaticResource SelectedTabBGColor}" />
+            <Setter Property="TextColor" Value="{StaticResource SelectedTabTextColor}" />
+          </DataTrigger>
+        </Button.Triggers>
+      </Button>
+
+      <Button Text="🔄"
+              FontSize="20"
+              Command="{Binding SortByStateCommand}"
+              CommandParameter="{x:Static helpers:SD.ONGOING}"
+              BackgroundColor="Transparent" 
+              BorderColor="{StaticResource BodyBGColor}"
+              BorderWidth="2"
+              TextColor="{StaticResource GlobalTextColor}" 
+              FontAttributes="Bold" 
+              Grid.Column="1">
+
+        <Button.Triggers>
+          <DataTrigger TargetType="Button" Binding="{Binding SelectedState}" Value="{x:Static helpers:SD.ONGOING}">
+            <Setter Property="BackgroundColor" Value="{StaticResource SelectedTabBGColor}" />
+            <Setter Property="TextColor" Value="{StaticResource SelectedTabTextColor}" />
+          </DataTrigger>
+        </Button.Triggers>
+      </Button>
+
+      <Button Text="⛔"
+              FontSize="20"
+              Command="{Binding SortByStateCommand}"
+              CommandParameter="{x:Static helpers:SD.BLOCKED}"
+              BackgroundColor="Transparent" 
+              BorderColor="{StaticResource BodyBGColor}"
+              BorderWidth="2"
+              TextColor="{StaticResource GlobalTextColor}" 
+              FontAttributes="Bold" 
+              Grid.Column="2">
+
+        <Button.Triggers>
+          <DataTrigger TargetType="Button" Binding="{Binding SelectedState}" Value="{x:Static helpers:SD.BLOCKED}">
+            <Setter Property="BackgroundColor" Value="{StaticResource SelectedTabBGColor}" />
+            <Setter Property="TextColor" Value="{StaticResource SelectedTabTextColor}" />
+          </DataTrigger>
+        </Button.Triggers>
+      </Button>
+
+      <Button Text="✅" 
+              FontSize="20"
+              Command="{Binding SortByStateCommand}" 
+              CommandParameter="{x:Static helpers:SD.DONE}"
+              BackgroundColor="Transparent" 
+              BorderColor="{StaticResource BodyBGColor}"
+              BorderWidth="2"
+              TextColor="{StaticResource GlobalTextColor}" 
+              FontAttributes="Bold" 
+              Grid.Column="3">
+
+        <Button.Triggers>
+          <DataTrigger TargetType="Button" Binding="{Binding SelectedState}" Value="{x:Static helpers:SD.DONE}">
+            <Setter Property="BackgroundColor" Value="{StaticResource SelectedTabBGColor}" />
+            <Setter Property="TextColor" Value="{StaticResource SelectedTabTextColor}" />
+          </DataTrigger>
+        </Button.Triggers>
+      </Button>
+
+    </Grid>
+  </Grid>
+</ContentPage>
